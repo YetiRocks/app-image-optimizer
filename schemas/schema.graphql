@@ -1,0 +1,31 @@
+# Image Optimizer — Upload, store, and serve image variants
+#
+# Upload: POST /app-image-optimizer/upload (binary body)
+# Serve original: GET /app-image-optimizer/Image/{id}
+# Serve variant: GET /app-image-optimizer/variant?id={id}&width=400&format=webp&dpr=2
+# Purge variants: DELETE /app-image-optimizer/variant?id={id}
+
+type Image @table(database: "app-image-optimizer") @export {
+    id: ID! @primaryKey
+    filename: String
+    contentType: String!
+    width: Int
+    height: Int
+    sizeBytes: Int
+    createdAt: String!
+    updatedAt: String
+    metadata: String                 # JSON: EXIF data, alt text, attribution
+    data: String!                    # base64-encoded image data
+}
+
+type ImageVariant @table(expiration: 3600, database: "app-image-optimizer") @export(public: [read]) {
+    id: ID! @primaryKey              # cache key: {imageId}_{width}_{dpr}_{format}
+    imageId: String! @indexed
+    format: String! @indexed         # "webp", "jpeg", "png", "avif", "original"
+    width: String!                   # requested width or "orig"
+    dpr: String!                     # device pixel ratio
+    contentType: String!
+    sizeBytes: Int
+    createdAt: String!
+    data: String!                    # base64-encoded variant data
+}

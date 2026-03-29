@@ -1,0 +1,13 @@
+name: "Image Optimizer"
+app_id: "app-image-optimizer"
+version: "0.1.0"
+description: "Image upload, storage, and variant serving with cache key routing and format negotiation"
+
+schemas:
+  - schemas/schema.graphql
+
+resources:
+  - resources/*.rs
+
+auth:
+  methods: [jwt, basic]
