@@ -12,7 +12,7 @@ use yeti_sdk::prelude::*;
 // Returns: { "id": "img-...", "contentType": "...", "sizeBytes": N }
 resource!(Upload {
     name = "upload",
-    create(request, ctx) => {
+    post(request, ctx) => {
         let body: Value = request.json()?;
 
         let data = body["data"].as_str()
@@ -50,14 +50,14 @@ resource!(Upload {
 
         image_table.put(&id, record).await?;
 
-        reply().code(201).json(json!({
+        created_json!({
             "id": id,
             "filename": filename,
             "contentType": content_type,
             "sizeBytes": size_bytes
-        }))
+        })
     },
-    update(request, ctx) => {
+    put(request, ctx) => {
         let id = match ctx.get("id") {
             Some(id) => id.to_string(),
             None => return bad_request("missing ?id= parameter"),
