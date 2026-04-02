@@ -1,5 +1,6 @@
 name: "Image Optimizer"
 app_id: "app-image-optimizer"
+customer_id: "yeti"
 version: "0.1.0"
 description: "Image upload, storage, and variant serving with cache key routing and format negotiation"
 
