@@ -5,10 +5,11 @@ version: "0.1.0"
 description: "Image upload, storage, and variant serving with cache key routing and format negotiation"
 
 schemas:
-  - schemas/schema.graphql
+  path: schemas/schema.graphql
 
 resources:
-  - resources/*.rs
+  path: resources/*.rs
+  route: /api
 
 auth:
   methods: [jwt, basic]
