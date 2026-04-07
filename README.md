@@ -49,7 +49,7 @@ Restart yeti. The application compiles automatically on first load (~2 minutes) 
 ### 2. Upload an image
 
 ```bash
-curl -X POST https://localhost/app-image-optimizer/api/upload \
+curl -X POST https://localhost:9996/app-image-optimizer/api/upload \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{
@@ -72,7 +72,7 @@ Response:
 ### 3. Fetch a variant
 
 ```bash
-curl "https://localhost/app-image-optimizer/api/variant?id=img-1743292800-a1b2c3d4e5f67890&width=400&format=webp&dpr=2"
+curl "https://localhost:9996/app-image-optimizer/api/variant?id=img-1743292800-a1b2c3d4e5f67890&width=400&format=webp&dpr=2"
 ```
 
 Response headers (first request):
@@ -88,7 +88,7 @@ content-type: image/webp
 
 ```bash
 # Same request again — now served from cache
-curl -I "https://localhost/app-image-optimizer/api/variant?id=img-1743292800-a1b2c3d4e5f67890&width=400&format=webp&dpr=2"
+curl -I "https://localhost:9996/app-image-optimizer/api/variant?id=img-1743292800-a1b2c3d4e5f67890&width=400&format=webp&dpr=2"
 ```
 
 Response headers (subsequent requests):
@@ -218,7 +218,7 @@ Examples:
 Purge all cached variants for a specific image:
 
 ```bash
-curl -X DELETE "https://localhost/app-image-optimizer/api/variant?id=img-1743292800-a1b2c3d4e5f67890" \
+curl -X DELETE "https://localhost:9996/app-image-optimizer/api/variant?id=img-1743292800-a1b2c3d4e5f67890" \
   -H "Authorization: Bearer $TOKEN"
 ```
 
