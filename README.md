@@ -49,7 +49,7 @@ Restart yeti. The application compiles automatically on first load (~2 minutes) 
 ### 2. Upload an image
 
 ```bash
-curl -X POST https://localhost:9996/app-image-optimizer/upload \
+curl -X POST https://localhost/app-image-optimizer/api/upload \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{
@@ -72,7 +72,7 @@ Response:
 ### 3. Fetch a variant
 
 ```bash
-curl "https://localhost:9996/app-image-optimizer/variant?id=img-1743292800-a1b2c3d4e5f67890&width=400&format=webp&dpr=2"
+curl "https://localhost/app-image-optimizer/api/variant?id=img-1743292800-a1b2c3d4e5f67890&width=400&format=webp&dpr=2"
 ```
 
 Response headers (first request):
@@ -88,7 +88,7 @@ content-type: image/webp
 
 ```bash
 # Same request again — now served from cache
-curl -I "https://localhost:9996/app-image-optimizer/variant?id=img-1743292800-a1b2c3d4e5f67890&width=400&format=webp&dpr=2"
+curl -I "https://localhost/app-image-optimizer/api/variant?id=img-1743292800-a1b2c3d4e5f67890&width=400&format=webp&dpr=2"
 ```
 
 Response headers (subsequent requests):
@@ -143,7 +143,7 @@ Client (browser, CDN, agent)
 
 ## Features
 
-### Image Upload (POST /app-image-optimizer/upload)
+### Image Upload (POST /app-image-optimizer/api/upload)
 
 Upload a new image with base64-encoded data:
 
@@ -160,7 +160,7 @@ Returns `201` with the generated ID, filename, content type, and approximate dec
 
 **Size limit:** Base64 data must not exceed 13,333,333 characters (~10MB decoded). Requests exceeding this return `400`.
 
-### Image Replace (PUT /app-image-optimizer/upload?id={imageId})
+### Image Replace (PUT /app-image-optimizer/api/upload?id={imageId})
 
 Replace an existing image. The source record is overwritten and all cached variants for that image are automatically purged:
 
@@ -176,7 +176,7 @@ Returns `200` with the image ID, content type, size, and `variantsPurged` count.
 
 **Variant purge:** Scans all ImageVariant records and deletes those with a matching `imageId`. This ensures no stale variants are served after a source image update.
 
-### Variant Serving (GET /app-image-optimizer/variant)
+### Variant Serving (GET /app-image-optimizer/api/variant)
 
 Serve an image variant by composite cache key. Cache hits are returned directly; cache misses create a new variant record:
 
@@ -213,12 +213,12 @@ Examples:
 | `avif` | `image/avif` |
 | `original` | Source image's content type |
 
-### Variant Purge (DELETE /app-image-optimizer/variant?id={imageId})
+### Variant Purge (DELETE /app-image-optimizer/api/variant?id={imageId})
 
 Purge all cached variants for a specific image:
 
 ```bash
-curl -X DELETE "https://localhost:9996/app-image-optimizer/variant?id=img-1743292800-a1b2c3d4e5f67890" \
+curl -X DELETE "https://localhost/app-image-optimizer/api/variant?id=img-1743292800-a1b2c3d4e5f67890" \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -251,10 +251,10 @@ Full CRUD on all tables is auto-generated from the schema:
 
 | Endpoint | Methods | Description |
 |----------|---------|-------------|
-| `/app-image-optimizer/Image` | GET, POST | List/create images |
-| `/app-image-optimizer/Image/{id}` | GET, PUT, DELETE | Read/update/delete an image |
-| `/app-image-optimizer/ImageVariant` | GET, POST | List/create variants |
-| `/app-image-optimizer/ImageVariant/{id}` | GET, PUT, DELETE | Read/update/delete a variant |
+| `/app-image-optimizer/api/Image` | GET, POST | List/create images |
+| `/app-image-optimizer/api/Image/{id}` | GET, PUT, DELETE | Read/update/delete an image |
+| `/app-image-optimizer/api/ImageVariant` | GET, POST | List/create variants |
+| `/app-image-optimizer/api/ImageVariant/{id}` | GET, PUT, DELETE | Read/update/delete a variant |
 
 ### Real-Time Streaming (auto-generated)
 
@@ -262,8 +262,8 @@ Real-time updates are built into the platform via `@export`:
 
 ```bash
 # SSE -- server-sent events
-GET /app-image-optimizer/Image?stream=sse
-GET /app-image-optimizer/ImageVariant?stream=sse
+GET /app-image-optimizer/api/Image?stream=sse
+GET /app-image-optimizer/api/ImageVariant?stream=sse
 
 # MQTT -- subscribe to changes
 mosquitto_sub -t "app-image-optimizer/Image" -h localhost -p 8883
@@ -272,7 +272,7 @@ mosquitto_sub -t "app-image-optimizer/ImageVariant" -h localhost -p 8883
 
 ### MCP Tools (auto-generated)
 
-MCP tools for table operations are auto-generated from `@export` schemas. Any MCP-compatible agent (Claude Code, Cursor, Windsurf) can discover and use them via the standard MCP protocol at `POST /app-image-optimizer/mcp`.
+MCP tools for table operations are auto-generated from `@export` schemas. Any MCP-compatible agent (Claude Code, Cursor, Windsurf) can discover and use them via the standard MCP protocol at `POST /app-image-optimizer/api/mcp`.
 
 ---
 
@@ -322,10 +322,11 @@ version: "0.1.0"
 description: "Image upload, storage, and variant serving with cache key routing and format negotiation"
 
 schemas:
-  - schemas/schema.graphql
+  path: schemas/schema.graphql
 
 resources:
-  - resources/*.rs
+  path: resources/*.rs
+  route: /api
 
 auth:
   methods: [jwt, basic]
