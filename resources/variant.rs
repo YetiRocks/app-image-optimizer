@@ -114,7 +114,7 @@ resource!(Variant {
             }
         }
 
-        reply().json(json!({
+        ok(json!({
             "imageId": image_id,
             "variantsPurged": purged
         }))

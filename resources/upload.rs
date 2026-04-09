@@ -106,7 +106,7 @@ resource!(Upload {
             }
         }
 
-        reply().json(json!({
+        ok(json!({
             "id": id,
             "contentType": content_type,
             "sizeBytes": size_bytes,
