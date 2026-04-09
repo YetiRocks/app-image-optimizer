@@ -49,7 +49,6 @@ resource!(Variant {
                 .header("x-cache", "HIT")
                 .header("x-variant-key", &cache_key)
                 .header("cache-control", "public, max-age=3600")
-                .code(200)
                 .type_header(ct)
                 .send(data.as_bytes().to_vec());
         }
@@ -93,7 +92,6 @@ resource!(Variant {
             .header("x-cache", "MISS")
             .header("x-variant-key", &cache_key)
             .header("cache-control", "public, max-age=3600")
-            .code(200)
             .type_header(target_ct)
             .send(data.as_bytes().to_vec())
     },
