@@ -12,8 +12,8 @@ use yeti_sdk::prelude::*;
 // Returns: { "id": "img-...", "contentType": "...", "sizeBytes": N }
 resource!(Upload {
     name = "upload",
-    post(request, ctx) => {
-        let body: Value = request.json()?;
+    post(ctx) => {
+        let body: Value = ctx.require_json_body()?.clone();
 
         let data = body["data"].as_str()
             .ok_or_else(|| YetiError::Validation("missing required field: data (base64)".into()))?;
@@ -57,13 +57,13 @@ resource!(Upload {
             "sizeBytes": size_bytes
         }))
     },
-    put(request, ctx) => {
-        let id = match ctx.get("id") {
+    put(ctx) => {
+        let id = match ctx.query("id") {
             Some(id) => id.to_string(),
             None => return bad_request("missing ?id= parameter"),
         };
 
-        let body: Value = request.json()?;
+        let body: Value = ctx.require_json_body()?.clone();
         let data = body["data"].as_str()
             .ok_or_else(|| YetiError::Validation("missing required field: data (base64)".into()))?;
         let content_type = body["contentType"].as_str()

@@ -14,15 +14,15 @@ use yeti_sdk::prelude::*;
 // metadata for client-side processing or CDN transformation.
 resource!(Variant {
     name = "variant",
-    get(request, ctx) => {
-        let image_id = match ctx.get("id") {
+    get(ctx) => {
+        let image_id = match ctx.query("id") {
             Some(id) => id.to_string(),
             None => return bad_request("missing ?id= parameter"),
         };
 
-        let width = ctx.get("width").unwrap_or("orig").to_string();
-        let format = ctx.get("format").unwrap_or("original").to_string();
-        let dpr = ctx.get("dpr").unwrap_or("1").to_string();
+        let width = ctx.query("width").unwrap_or("orig").to_string();
+        let format = ctx.query("format").unwrap_or("original").to_string();
+        let dpr = ctx.query("dpr").unwrap_or("1").to_string();
 
         // Validate parameters
         if width != "orig" {
@@ -95,8 +95,8 @@ resource!(Variant {
             .type_header(target_ct)
             .send(data.as_bytes().to_vec())
     },
-    delete(request, ctx) => {
-        let image_id = match ctx.get("id") {
+    delete(ctx) => {
+        let image_id = match ctx.query("id") {
             Some(id) => id.to_string(),
             None => return bad_request("missing ?id= parameter"),
         };
