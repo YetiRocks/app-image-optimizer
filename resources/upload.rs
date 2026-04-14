@@ -50,12 +50,12 @@ resource!(Upload {
 
         image_table.put(&id, record).await?;
 
-        reply().code(201).json(json!({
+        created_json!({
             "id": id,
             "filename": filename,
             "contentType": content_type,
             "sizeBytes": size_bytes
-        }))
+        })
     },
     put(ctx) => {
         let id = match ctx.query("id") {
