@@ -38,7 +38,7 @@ resource!(Variant {
         }
 
         let cache_key = format!("{}_{}_{:.1}_{}", image_id, width, dpr.parse::<f32>().unwrap_or(1.0), format);
-        let variant_table = ctx.get_table("ImageVariant")?;
+        let variant_table = ctx.table("ImageVariant")?;
 
         // Cache hit
         if let Some(variant) = variant_table.get(&cache_key).await? {
@@ -54,7 +54,7 @@ resource!(Variant {
         }
 
         // Cache miss — load original
-        let image_table = ctx.get_table("Image")?;
+        let image_table = ctx.table("Image")?;
         let image = match image_table.get(&image_id).await? {
             Some(img) => img,
             None => return not_found(&format!("image {} not found", image_id)),
@@ -101,7 +101,7 @@ resource!(Variant {
             None => return bad_request("missing ?id= parameter"),
         };
 
-        let variant_table = ctx.get_table("ImageVariant")?;
+        let variant_table = ctx.table("ImageVariant")?;
         let all: Vec<Value> = variant_table.get_all().await?;
         let mut purged = 0u32;
 

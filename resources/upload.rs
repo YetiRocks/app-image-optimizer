@@ -30,7 +30,7 @@ resource!(Upload {
             return bad_request("image exceeds 10MB limit");
         }
 
-        let image_table = ctx.get_table("Image")?;
+        let image_table = ctx.table("Image")?;
         let now = unix_timestamp()?.to_string();
         let size_bytes = data.len() * 3 / 4; // approximate decoded size
 
@@ -73,8 +73,8 @@ resource!(Upload {
             return bad_request(&format!("unsupported content type: {}", content_type));
         }
 
-        let image_table = ctx.get_table("Image")?;
-        let variant_table = ctx.get_table("ImageVariant")?;
+        let image_table = ctx.table("Image")?;
+        let variant_table = ctx.table("ImageVariant")?;
 
         if !image_table.does_exist(&id).await? {
             return not_found(&format!("image {} not found", id));
