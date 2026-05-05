@@ -315,31 +315,28 @@ MCP tools for table operations are auto-generated from `@export` schemas. Any MC
 
 ## Configuration
 
-```yaml
-name: "Image Optimizer"
-app_id: "app-image-optimizer"
-version: "0.1.0"
-description: "Image upload, storage, and variant serving with cache key routing and format negotiation"
+App configuration lives in `Cargo.toml` under `[package.metadata.app]`. There is no separate `config.yaml` or `services.yaml`:
 
-schemas:
-  path: schemas/schema.graphql
+```toml
+[package]
+name = "app-image-optimizer"
+version = "0.1.0"
+edition = "2024"
+description = "Image upload, storage, and variant serving with cache key routing and format negotiation"
 
-resources:
-  path: resources/*.rs
-  route: /api
-
-auth:
-  methods: [jwt, basic]
+[package.metadata.app]
+schemas = "schemas/schema.graphql"
+resources = "resources/*.rs"
 ```
 
 ### Key settings
 
 | Field | Value | Notes |
 |-------|-------|-------|
-| `app_id` | `app-image-optimizer` | URL prefix for all endpoints |
-| `schemas` | `schemas/schema.graphql` | Defines Image and ImageVariant tables |
-| `resources` | `resources/*.rs` | Upload and Variant custom resources |
-| `auth.methods` | `[jwt, basic]` | Authentication methods for write operations |
+| `package.name` | `app-image-optimizer` | URL prefix for all endpoints |
+| `metadata.app.schemas` | `schemas/schema.graphql` | Defines Image and ImageVariant tables |
+| `metadata.app.resources` | `resources/*.rs` | Upload and Variant custom resources |
+| `metadata.auth` | (optional block) | Add `[package.metadata.auth]` to enable JWT/Basic for write operations |
 
 ---
 
@@ -347,7 +344,7 @@ auth:
 
 ```
 app-image-optimizer/
-  config.yaml              # App configuration
+  Cargo.toml               # App configuration ([package.metadata.app])
   schemas/
     schema.graphql         # Image and ImageVariant tables
   resources/
@@ -361,12 +358,20 @@ app-image-optimizer/
 
 Image Optimizer uses yeti's built-in auth system. In development mode, all endpoints are accessible without authentication. In production:
 
-- **JWT** and **Basic Auth** supported (configured in config.yaml)
+- **JWT** and **Basic Auth** supported (configured in `Cargo.toml` under `[package.metadata.auth]`)
 - **ImageVariant** table allows public `read` access via `@export(public: [read])` -- variants can be served without authentication
 - **Image** table requires authentication for all operations (upload, replace, delete, list)
 - **Upload** (POST) and **Replace** (PUT) require authentication
 - **Variant purge** (DELETE) requires authentication
 - **Variant serving** (GET) is public -- no token needed
+
+Example auth block:
+
+```toml
+[package.metadata.auth]
+allow_signup = false
+default_role = "uploader"
+```
 
 This split allows CDN edge servers and browsers to fetch optimized variants directly while keeping write operations protected.
 
