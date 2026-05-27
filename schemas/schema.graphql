@@ -18,7 +18,7 @@ type Image @table(database: "app-image-optimizer") @export {
     data: String!                    # base64-encoded image data
 }
 
-type ImageVariant @table(expiration: 3600, database: "app-image-optimizer") @export(public: [read]) {
+type ImageVariant @table(expiration: 3600, database: "app-image-optimizer") @export @access(public: [read]) {
     id: ID! @primaryKey              # cache key: {imageId}_{width}_{dpr}_{format}
     imageId: String! @indexed
     format: String! @indexed         # "webp", "jpeg", "png", "avif", "original"
