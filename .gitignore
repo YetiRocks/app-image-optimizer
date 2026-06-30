@@ -8,3 +8,7 @@ target/
 /Cargo.lock
 /web/
 .DS_Store
+
+# Local runtime data created when yeti runs from inside the app dir (not source)
+/cache/
+/deployments/
