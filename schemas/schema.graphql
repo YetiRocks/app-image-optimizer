@@ -5,7 +5,7 @@
 # Serve variant: GET /app-image-optimizer/variant?id={id}&width=400&format=webp&dpr=2
 # Purge variants: DELETE /app-image-optimizer/variant?id={id}
 
-type Image @table(database: "app-image-optimizer") @export {
+type Image @table(database: "app-image-optimizer") @distribute @export @access(public: [read, create, update, delete]) {
     id: ID! @primaryKey
     filename: String
     contentType: String!
