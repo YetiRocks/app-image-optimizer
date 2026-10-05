@@ -38,7 +38,10 @@ resource!(Variant {
         }
 
         let cache_key = format!("{}_{}_{:.1}_{}", image_id, width, dpr.parse::<f32>().unwrap_or(1.0), format);
-        let variant_table = ctx.table("ImageVariant")?;
+        // System handle (ADR-038, YTC-1905): `ImageVariant` is the app's own
+        // derived cache (public read, no public write); generating and purging
+        // variants is the app's bookkeeping, not a write on the caller's behalf.
+        let variant_table = ctx.system().table("ImageVariant")?;
 
         // Cache hit
         if let Some(variant) = variant_table.get(&cache_key).await? {
@@ -101,7 +104,10 @@ resource!(Variant {
             None => return bad_request("missing ?id= parameter"),
         };
 
-        let variant_table = ctx.table("ImageVariant")?;
+        // System handle (ADR-038, YTC-1905): `ImageVariant` is the app's own
+        // derived cache (public read, no public write); generating and purging
+        // variants is the app's bookkeeping, not a write on the caller's behalf.
+        let variant_table = ctx.system().table("ImageVariant")?;
         let all: Vec<Value> = variant_table.get_all().await?;
         let mut purged = 0u32;
 

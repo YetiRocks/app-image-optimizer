@@ -74,7 +74,10 @@ resource!(Upload {
         }
 
         let image_table = ctx.table("Image")?;
-        let variant_table = ctx.table("ImageVariant")?;
+        // System handle (ADR-038, YTC-1905): `ImageVariant` is the app's own
+        // derived cache (public read, no public write); generating and purging
+        // variants is the app's bookkeeping, not a write on the caller's behalf.
+        let variant_table = ctx.system().table("ImageVariant")?;
 
         if !image_table.does_exist(&id).await? {
             return not_found(&format!("image {} not found", id));
