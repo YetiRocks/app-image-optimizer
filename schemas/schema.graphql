@@ -28,4 +28,5 @@ type ImageVariant @table(expiration: 3600, database: "app-image-optimizer") @exp
     sizeBytes: Int
     createdAt: String!
     data: String!                    # base64-encoded variant data
+    expiresAt: Long @expiresAt       # clock for @table(expiration): a write stamps now + 3600
 }
