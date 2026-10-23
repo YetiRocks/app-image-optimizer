@@ -251,9 +251,9 @@ Full CRUD on all tables is auto-generated from the schema:
 
 | Endpoint | Methods | Description |
 |----------|---------|-------------|
-| `/app-image-optimizer/api/Image` | GET, POST | List/create images |
+| `/app-image-optimizer/api/Image/` | GET, POST | List/create images |
 | `/app-image-optimizer/api/Image/{id}` | GET, PUT, DELETE | Read/update/delete an image |
-| `/app-image-optimizer/api/ImageVariant` | GET, POST | List/create variants |
+| `/app-image-optimizer/api/ImageVariant/` | GET, POST | List/create variants |
 | `/app-image-optimizer/api/ImageVariant/{id}` | GET, PUT, DELETE | Read/update/delete a variant |
 
 ### Real-Time Streaming (auto-generated)
